@@ -21,6 +21,8 @@
 #include "commons/utils.h"
 #include <QCoreApplication>
 #include <QMutex>
+#include <stdio.h>
+#include <iostream>
 using namespace std;
 using namespace std::placeholders;
 
@@ -165,4 +167,14 @@ void Imager::setCaptureEndianess(Configuration::CaptureEndianess captureEndianes
     if (d->imager_thread)
         wait_for(push_job_on_thread([=]() { d->imager_thread->setCaptureEndianess(d->captureEndianess); }));
 }
+
+
+  void Imager::setROIVirtual(const QRect &){
+    qDebug() << "SET VIRTUAL ROI";
+    std::cout << "SET ROI" << std::endl;
+
+  }
+  void Imager::clearROIVirtual(){
+    qDebug() << "SET VIRTUAL ROI";
+  }
 

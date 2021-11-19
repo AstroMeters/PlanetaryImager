@@ -188,6 +188,23 @@
    <addaction name="actionEdit_ROI"/>
    <addaction name="actionClear_ROI"/>
   </widget>
+  <widget class="QToolBar" name="ROIVirtualToolbar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="windowTitle">
+    <string>ROI Virtual</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionSelect_ROIVirtual"/>
+   <addaction name="actionEdit_ROIVirtual"/>
+   <addaction name="actionClear_ROIVirtual"/>
+  </widget>
   <widget class="QDockWidget" name="histogram">
    <property name="floating">
     <bool>false</bool>
@@ -373,6 +390,30 @@
   <action name="actionClear_ROI">
    <property name="enabled">
     <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/resources.qrc">
+     <normaloff>:/resources/undo_roi.png</normaloff>:/resources/undo_roi.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Clear ROI</string>
+   </property>
+  </action>
+  <action name="actionSelect_ROIVirtual">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/resources.qrc">
+     <normaloff>:/resources/roi.png</normaloff>:/resources/roi.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Select ROI</string>
+   </property>
+  </action>
+  <action name="actionClear_ROIVirtual">
+   <property name="enabled">
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="resources/resources.qrc">

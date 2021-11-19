@@ -28,7 +28,8 @@
 using namespace std;
 using namespace std::placeholders;
 
-DPTR_IMPL(ImageFileWriter) {
+DPTR_IMPL(ImageFileWriter)
+{
   const Configuration &configuration;
   QString filename;
   ImageFileWriter *q;
@@ -42,13 +43,14 @@ DPTR_IMPL(ImageFileWriter) {
 ImageFileWriter::ImageFileWriter(ImageFileWriter::Format format, const Configuration &configuration) : dptr(configuration, configuration.savefile(), this)
 {
   qDebug() << "Format: " << format;
-  switch(format) {
-    case PNG:
-      d->writer = bind(&Private::saveCV, d.get(), _1, "png");
-      break;
-    case FITS:
-      d->writer = bind(&Private::saveFITS, d.get(), _1);
-      break;
+  switch (format)
+  {
+  case PNG:
+    d->writer = bind(&Private::saveCV, d.get(), _1, "png");
+    break;
+  case FITS:
+    d->writer = bind(&Private::saveFITS, d.get(), _1);
+    break;
   }
   d->savedir.mkpath(d->filename);
   d->savedir.cd(d->filename);
@@ -56,16 +58,16 @@ ImageFileWriter::ImageFileWriter(ImageFileWriter::Format format, const Configura
 
 ImageFileWriter::~ImageFileWriter()
 {
-  if(d->savedir.count() == 0) {
+  if (d->savedir.count() == 0)
+  {
     d->savedir.cdUp();
     d->savedir.rmpath(d->filename);
   }
 }
 
-
 void ImageFileWriter::doHandle(FrameConstPtr frame)
 {
-  if(d->writer)
+  if (d->writer)
     d->writer(frame);
 }
 
@@ -74,7 +76,7 @@ QString ImageFileWriter::filename() const
   return d->filename;
 }
 
-QString ImageFileWriter::Private::savename(FrameConstPtr frame, const QString& extension) const
+QString ImageFileWriter::Private::savename(FrameConstPtr frame, const QString &extension) const
 {
   return "%1/%2.%3"_q % filename % frame->created_utc().toString("yyyy-MM-ddTHHmmss.zzz-UTC") % extension;
 }
@@ -107,39 +109,52 @@ END
 void ImageFileWriter::Private::saveFITS(FrameConstPtr frame) const
 {
   auto filename = savename(frame, "fits");
-  if(frame->channels() != 1) {
-    throw SaveImages::Error::openingFile(filename, QObject::tr("Colour images are currently unsupported for FITS writer"));
+  cv::Mat mat;
+  if (frame->channels() != 1)
+  {
+    //throw SaveImages::Error::openingFile(filename, QObject::tr("Colour images are currently unsupported for FITS writer"));
+    cv::cvtColor(frame->mat(), mat, cv::COLOR_RGB2GRAY);
   }
-  long naxes[2] = { frame->resolution().width(), frame->resolution().height() };
-  try {
+  else{
+    mat = frame->mat();
+  }
+  long naxes[2] = {frame->resolution().width(), frame->resolution().height()};
+  try
+  {
     CCfits::FITS fits{filename.toStdString(), frame->bpp() == 8 ? BYTE_IMG : USHORT_IMG, 2, naxes};
     valarray<long> data(frame->resolution().width() * frame->resolution().height());
-    auto mat = frame->mat();
-    if(frame->bpp() == 8) {
+    if (frame->bpp() == 8)
+    {
       copy(mat.begin<uint8_t>(), mat.end<uint8_t>(), begin(data));
-    } else {
+    }
+    else
+    {
       copy(mat.begin<uint16_t>(), mat.end<uint16_t>(), begin(data));
     }
-    if(frame->exposure() != Frame::Seconds::zero()) {
+    if (frame->exposure() != Frame::Seconds::zero())
+    {
       fits.pHDU().addKey("EXPTIME", frame->exposure().count(), "Total Exposure Time (s)");
     }
     fits.pHDU().addKey("DATE-OBS", frame->created_utc().toString(Qt::ISODate).toStdString(), "UTC start date of observation");
     fits.pHDU().write(1, data.size(), data);
     fits.flush();
   }
-  catch(const CCfits::FitsException &e) {
+  catch (const CCfits::FitsException &e)
+  {
     throw SaveImages::Error(QString::fromStdString(e.message()));
   }
 }
 
-void ImageFileWriter::Private::saveCV(FrameConstPtr frame, const QString& extension) const
+void ImageFileWriter::Private::saveCV(FrameConstPtr frame, const QString &extension) const
 {
   const QString filename = savename(frame, extension);
-  try {
-    if(!cv::imwrite(filename.toStdString(), frame->mat()))
+  try
+  {
+    if (!cv::imwrite(filename.toStdString(), frame->mat()))
       throw SaveImages::Error::openingFile(filename);
-  } catch(const exception &e) {
+  }
+  catch (const exception &e)
+  {
     throw SaveImages::Error(QString::fromStdString(e.what()));
   }
 }
-

@@ -355,6 +355,13 @@ PlanetaryImagerMainWindow::PlanetaryImagerMainWindow(
       d->image_widget->startSelectionMode(ZoomableImage::SelectionMode::Rect);
     });
 
+
+    connect(d->ui->actionClear_ROIVirtual, &QAction::triggered, [&] { d->imager->clearROIVirtual(); });
+    connect(d->ui->actionSelect_ROIVirtual, &QAction::triggered, [&] {
+      d->selection_mode = Private::SelectionMode::ROI;
+      d->image_widget->startSelectionMode(ZoomableImage::SelectionMode::Rect);
+    });
+
     connect(d->ui->actionEdit_ROI, &QAction::triggered, this, bind(&Private::editROI, d.get()));
     QMap<Private::SelectionMode, function<void(const QRect &)>> handle_selection {
       {Private::SelectionMode::None, [](const QRect&) {}},
@@ -528,6 +535,9 @@ void PlanetaryImagerMainWindow::Private::onImagerInitialized(Imager * imager)
     ui->actionSelect_ROI->setEnabled(imager->supports(Imager::ROI));
     ui->actionEdit_ROI->setEnabled(imager->supports(Imager::ROI));
     ui->actionClear_ROI->setEnabled(imager->supports(Imager::ROI));
+    ui->actionSelect_ROIVirtual->setEnabled(true);
+    // ui->actionEdit_ROI->setEnabled(imager->supports(Imager::ROI));
+    ui->actionClear_ROIVirtual->setEnabled(true);
     ui->actionAddTrackingTarget->setEnabled(true);
     ui->actionSetCentroidArea->setEnabled(true);
 }
