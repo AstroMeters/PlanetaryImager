@@ -254,16 +254,19 @@
     <string>&amp;Rescan</string>
    </property>
   </action>
+  
   <action name="action_device_use">
    <property name="text">
     <string>&amp;Load...</string>
    </property>
   </action>
+  
   <action name="actionDevices">
    <property name="text">
     <string>Devices</string>
    </property>
   </action>
+  
   <action name="actionChip_Info">
    <property name="checkable">
     <bool>true</bool>
@@ -272,6 +275,7 @@
     <string>&amp;Chip Info</string>
    </property>
   </action>
+  
   <action name="actionCamera_Settings">
    <property name="checkable">
     <bool>true</bool>
@@ -280,6 +284,7 @@
     <string>Camera &amp;Settings</string>
    </property>
   </action>
+  
   <action name="actionRecording">
    <property name="checkable">
     <bool>true</bool>
@@ -288,11 +293,13 @@
     <string>&amp;Recording</string>
    </property>
   </action>
+  
   <action name="actionStart_Live">
    <property name="text">
     <string>Start Live</string>
    </property>
   </action>
+  
   <action name="actionDisconnect">
    <property name="enabled">
     <bool>false</bool>
@@ -305,6 +312,7 @@
     <string>&amp;Disconnect</string>
    </property>
   </action>
+  
   <action name="actionPickFolder">
    <property name="icon">
     <iconset resource="resources/resources.qrc">
@@ -314,6 +322,7 @@
     <string>Pick</string>
    </property>
   </action>
+  
   <action name="actionHide_all">
    <property name="text">
     <string>&amp;Hide all</string>
@@ -322,6 +331,7 @@
     <string>Ctrl+H</string>
    </property>
   </action>
+  
   <action name="actionShow_all">
    <property name="text">
     <string>Sh&amp;ow all</string>
@@ -330,6 +340,7 @@
     <string>Ctrl+Shift+H</string>
    </property>
   </action>
+  
   <action name="actionShow_settings">
    <property name="icon">
     <iconset resource="resources/resources.qrc">
@@ -342,16 +353,19 @@
     <string>Ctrl+E</string>
    </property>
   </action>
+  
   <action name="actionAbout">
    <property name="text">
     <string>&amp;About Planetary Imager</string>
    </property>
   </action>
+  
   <action name="actionAbout_Qt">
    <property name="text">
     <string>About &amp;Qt</string>
    </property>
   </action>
+  
   <action name="actionEdges_Detection">
    <property name="checkable">
     <bool>true</bool>
@@ -367,6 +381,7 @@
     <string>&amp;Edges Detection</string>
    </property>
   </action>
+  
   <action name="actionHistogram">
    <property name="checkable">
     <bool>true</bool>
@@ -375,6 +390,7 @@
     <string>H&amp;istogram</string>
    </property>
   </action>
+  
   <action name="actionSelect_ROI">
    <property name="enabled">
     <bool>false</bool>
@@ -387,6 +403,7 @@
     <string>&amp;Select ROI</string>
    </property>
   </action>
+  
   <action name="actionClear_ROI">
    <property name="enabled">
     <bool>false</bool>
@@ -399,6 +416,7 @@
     <string>&amp;Clear ROI</string>
    </property>
   </action>
+  
   <action name="actionSelect_ROIVirtual">
    <property name="enabled">
     <bool>true</bool>
@@ -408,9 +426,10 @@
      <normaloff>:/resources/roi.png</normaloff>:/resources/roi.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Select ROI</string>
+    <string>&amp;Select virtual ROI</string>
    </property>
   </action>
+  
   <action name="actionClear_ROIVirtual">
    <property name="enabled">
     <bool>true</bool>
@@ -420,14 +439,16 @@
      <normaloff>:/resources/undo_roi.png</normaloff>:/resources/undo_roi.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Clear ROI</string>
+    <string>&amp;Clear virtual ROI</string>
    </property>
   </action>
+  
   <action name="actionQuit">
    <property name="text">
     <string>Q&amp;uit</string>
    </property>
   </action>
+  
   <action name="actionNight_Mode">
    <property name="checkable">
     <bool>true</bool>
@@ -440,16 +461,19 @@
     <string>Night Mode</string>
    </property>
   </action>
+  
   <action name="actionScripting">
    <property name="text">
     <string>&amp;Scripting</string>
    </property>
   </action>
+  
   <action name="actionOpen_log_file_folder">
    <property name="text">
     <string>&amp;Open log file folder...</string>
    </property>
   </action>
+  
   <action name="actionEdit_ROI">
    <property name="enabled">
     <bool>false</bool>
@@ -462,6 +486,7 @@
     <string>Edit ROI</string>
    </property>
   </action>
+  
   <action name="actionStretch_histogram">
    <property name="checkable">
     <bool>true</bool>
@@ -470,6 +495,7 @@
     <string>&amp;Histogram equalization</string>
    </property>
   </action>
+  
   <action name="actionStretch_colour_saturation">
    <property name="checkable">
     <bool>true</bool>
@@ -478,6 +504,7 @@
     <string>&amp;Stretch colour saturation</string>
    </property>
   </action>
+  
   <action name="actionAddTrackingTarget">
    <property name="enabled">
     <bool>false</bool>
@@ -489,6 +516,7 @@
     <string>Add tracking target</string>
    </property>
   </action>
+  
   <action name="actionSetCentroidArea">
    <property name="enabled">
     <bool>false</bool>
@@ -497,6 +525,7 @@
     <string>&amp;Set centroid area</string>
    </property>
   </action>
+  
   <action name="actionDisableTracking">
    <property name="enabled">
     <bool>false</bool>
@@ -505,6 +534,7 @@
     <string>&amp;Disable tracking</string>
    </property>
   </action>
+  
   <action name="actionMount">
    <property name="checkable">
     <bool>true</bool>
@@ -513,6 +543,7 @@
     <string>Mount</string>
    </property>
   </action>
+  
  </widget>
  <resources>
   <include location="resources/resources.qrc"/>

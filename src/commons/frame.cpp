@@ -17,7 +17,9 @@
  *
  */
 
+#include <QRect>
 #include "commons/frame.h"
+
 using namespace std;
 
 DPTR_IMPL(Frame) {
@@ -138,3 +140,16 @@ void Frame::overrideByteOrder(ByteOrder byteOrder)
 {
     d->byteOrder = byteOrder;
 }
+
+// int8_t set_roi(Qrect new_roi)
+// {
+//     d->virtual_roi = new_roi;
+// }
+
+
+
+QRect virtual_roi(){
+  return QRect(0, 0, 1, 1);
+}
+
+//QRect get_Roi() {return _rect};

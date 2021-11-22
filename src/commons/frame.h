@@ -27,6 +27,7 @@
 #include <QVariantMap>
 #include <chrono>
 #include "commons/fwd.h"
+#include <QRect>
 
 FWD_PTR(Frame)
 
@@ -42,6 +43,8 @@ public:
       Bayer_GBRG,
       Bayer_BGGR,
     };
+  //int8_t set_roi(Qrect new_roi);
+  QRect virtual_roi();
   enum ByteOrder { BigEndian, LittleEndian };
   Frame(ColorFormat colorFormat, const cv::Mat &image, ByteOrder byteOrder = BigEndian);
   Frame(uint8_t bpp, ColorFormat colorFormat, const QSize &resolution, ByteOrder byteOrder = BigEndian);
@@ -63,7 +66,9 @@ public:
   Seconds exposure() const;
   void set_exposure(const Seconds &exposure);
   void overrideByteOrder(ByteOrder byteOrder);
+
 private:
+  QRect _roi;
   DPTR
 };
 

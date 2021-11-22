@@ -590,6 +590,96 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="solar_tools">
+      <attribute name="title">
+       <string>Solar tools</string>
+      </attribute>
+
+
+
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QLabel" name="label_solar_features">
+         <property name="text">
+          <string>Solar features</string>
+         </property>
+        </widget>
+       </item>
+
+
+
+       <item>
+        <widget class="QRadioButton" name="solar_detection">
+         <property name="text">
+          <string>Solar detection</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="solar_to_virtualroi">
+         <property name="text">
+          <string>Setting of virtual ROI</string>
+         </property>
+        </widget>
+       </item>
+
+        <item row="1" column="0">
+            <widget class="QCheckBox" name="enable_solar_detection">
+            <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>1</horstretch>
+                <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Allow Sun detection in the image</string>
+            </property>
+            </widget>
+        </item>
+
+        <item row="1" column="0">
+            <widget class="QCheckBox" name="enable_solar_virtualROI">
+            <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>1</horstretch>
+                <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Set automatic virtual ROI cropping</string>
+            </property>
+            </widget>
+        </item>
+
+        <item row="2" column="1">
+            <widget class="QSpinBox" name="solar_detection_ROI_size_x">
+            <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>1</horstretch>
+                <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="minimum">
+                <number>1</number>
+            </property>
+            </widget>
+        </item>
+
+        <item row="2" column="2">
+            <widget class="QSpinBox" name="solar_detection_ROI_size_y">
+            <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>1</horstretch>
+                <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="minimum">
+                <number>1</number>
+            </property>
+            </widget>
+        </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>

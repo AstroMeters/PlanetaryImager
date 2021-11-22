@@ -209,6 +209,12 @@ void DisplayImage::create_qimages()
       cv::merge(h_s_v, hsv);
       cv::cvtColor(hsv, *cv_image, cv::COLOR_HSV2RGB);
     }
+
+//TODO: Zapnout ROI
+    if(true) {
+      cv::rectangle(*cv_image, cv::Point(100, 100), cv::Point(200, 200), 1, cv::LINE_AA);
+    }
+
     QImage image{cv_image->data, cv_image->cols, cv_image->rows, static_cast<int>(cv_image->step), cv_image->channels() == 1 ? QImage::Format_Grayscale8: QImage::Format_RGB888,
       [](void *data){ delete reinterpret_cast<cv::Mat*>(data); }, cv_image};
     if(cv_image->channels() == 1) {
