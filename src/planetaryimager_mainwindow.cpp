@@ -28,6 +28,7 @@
 #include <QThread>
 #include <QFileDialog>
 #include <QDateTime>
+#include <QMetaType>
 #include <QtConcurrent/QtConcurrent>
 #include "commons/fps_counter.h"
 #include "widgets/cameracontrolswidget.h"
@@ -52,6 +53,8 @@
 #include <vector>
 #include <QGraphicsEllipseItem>
 #include <QGraphicsRectItem>
+#include <opencv2/opencv.hpp>
+#include <vector>
 
 #include "widgets/editroidialog.h"
 
@@ -81,9 +84,11 @@ using namespace std;
 using namespace std::placeholders;
 
 Q_DECLARE_METATYPE(cv::Mat)
+//Q_DECLARE_METATYPE(SolarDetector::solarDiscInfo)
 
 DPTR_IMPL(PlanetaryImagerMainWindow)
 {
+
   PlanetaryImagerPtr planetaryImager;
   FilesystemBrowserPtr filesystemBrowser;
   MainWindowWidgetsPtr main_window_widgets;
@@ -117,6 +122,8 @@ DPTR_IMPL(PlanetaryImagerMainWindow)
     QGraphicsRectItem *centroidArea = nullptr;
     //TODO: show centroid position
   } infoOverlay;
+
+  //std::vector<cv::Vec3f> detectet_solar_disc;
   void cameraDisconnected();
   void enableUIWidgets(bool cameraConnected);
   void editROI();
@@ -177,6 +184,17 @@ void PlanetaryImagerMainWindow::updateInfoOverlay()
   }
 }
 
+void PlanetaryImagerMainWindow::updateSolarPosition(cv::Vec3f circles)
+{
+    std::cout << "UPDATE" << circles << std::endl;
+}
+
+
+void PlanetaryImagerMainWindow::detection(cv::Vec3f count){
+  std::cout << "POCET " << count << std::endl;
+}
+
+
 PlanetaryImagerMainWindow::~PlanetaryImagerMainWindow()
 {
   LOG_F_SCOPE
@@ -202,6 +220,9 @@ PlanetaryImagerMainWindow::PlanetaryImagerMainWindow(
     Qt::WindowFlags flags)
     : QMainWindow(parent, flags), dptr(planetaryImager, filesystemBrowser)
 {
+qRegisterMetaType<solarDiscInfo>("solarDiscInfo");
+
+
   Private::q = this;
   d->ui.reset(new Ui::PlanetaryImagerMainWindow);
 
@@ -216,6 +237,7 @@ PlanetaryImagerMainWindow::PlanetaryImagerMainWindow(
   d->histogram = make_shared<Histogram>(d->planetaryImager->configuration());
   d->ui->histogram->setWidget(d->histogramWidget = new HistogramWidget(d->histogram, d->planetaryImager->configuration()));
   d->ui->statusbar->addPermanentWidget(d->statusbar_info_widget = new StatusBarInfoWidget(), 1);
+  //d->solarDetector = make_shared<SolarDetector>());
 
   if (HAVE_LIBINDI == 1)
   {
@@ -354,6 +376,18 @@ PlanetaryImagerMainWindow::PlanetaryImagerMainWindow(
   connect(d->planetaryImager->saveImages().get(), &SaveImages::savedFrames, d->recording_panel, &RecordingPanel::saved, Qt::QueuedConnection);
   connect(d->planetaryImager->saveImages().get(), &SaveImages::droppedFrames, d->recording_panel, &RecordingPanel::dropped, Qt::QueuedConnection);
   connect(d->ui->actionDisconnect, &QAction::triggered, d->planetaryImager.get(), &PlanetaryImager::closeImager);
+
+  //connect(d->solarDetector.get(), &SolarDetector::newDetection, d->solarDetector.get(), bind(&DisplayImage::updateSolarPosition, d->detectet_solar_disc), Qt::QueuedConnection);
+  //connect(d->solarDetector, &SolarDetector::newDetection, d->solarDetector, bind(&DisplayImage::updateSolarPosition, 10), Qt::QueuedConnection);
+  //int cislo = 10;
+  //connect(d->solarDetector.get(), &SolarDetector::detection, this, &PlanetaryImagerMainWindow::detection, Qt::QueuedConnection);
+  //connect(d->solarDetector.get(), &SolarDetector::detection, this, &PlanetaryImagerMainWindow::updateSolarPosition);
+  connect(d->solarDetector.get(), &SolarDetector::detection, d->displayImage.get(), &DisplayImage::updateSolarPosition);
+  // connect(d->solarDetector.get(), &SolarDetector::detection, this, [=]
+  //         {
+  //           std::cout << "............";
+  //         });
+
 
   connect(d->ui->actionQuit, &QAction::triggered, this, &QWidget::close);
   connect(d->ui->actionQuit, &QAction::triggered, this, &PlanetaryImagerMainWindow::quit);

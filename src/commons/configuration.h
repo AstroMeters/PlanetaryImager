@@ -41,6 +41,11 @@ public:
     declare_setting(limit_fps_recording, bool)
     declare_setting(debayer, bool)
     declare_setting(limit_fps, bool)
+
+    declare_setting(solar_detection, bool)
+    declare_setting(solar_virtualROI, bool)
+    declare_setting(solar_display_contours, bool)
+    declare_setting(solar_display_mesh, bool)
     
     declare_setting(buffered_output, bool )
     declare_setting(max_memory_usage, long long )

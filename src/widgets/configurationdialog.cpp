@@ -104,6 +104,37 @@ ConfigurationDialog::ConfigurationDialog(Configuration &configuration, QWidget* 
     });
     
     d->ui->buffered_file->setChecked(d->configuration.buffered_output());
+
+    // virtual ROI
+
+
+    // Solar part... 
+    d->ui->solar_detection_box->setVisible(true);
+    d->ui->solar_vROI_box->setVisible(true);
+
+    d->ui->enable_solar_detection->setChecked(d->configuration.solar_detection());
+    connect(d->ui->enable_solar_detection, &QCheckBox::toggled, [this] (bool checked){
+      d->configuration.set_solar_detection(checked);
+    });
+    
+    d->ui->enable_solar_virtualROI->setChecked(d->configuration.solar_virtualROI());
+    connect(d->ui->enable_solar_virtualROI, &QCheckBox::toggled, [this] (bool checked){
+      d->configuration.set_solar_virtualROI(checked);
+    });
+
+    d->ui->solar_display_contours->setChecked(d->configuration.solar_display_contours());
+    connect(d->ui->solar_display_contours, &QCheckBox::toggled, [this] (bool checked){
+      d->configuration.set_solar_display_contours(checked);
+    });
+
+    d->ui->solar_display_contours->setChecked(d->configuration.solar_display_contours());
+    connect(d->ui->solar_display_contours, &QCheckBox::toggled, [this] (bool checked){
+      d->configuration.set_solar_display_contours(checked);
+    });
+
+    //connect(d->ui->solar_detection_box, F_PTR(QSpinBox, valueChanged, int), [=](double size) { d->configuration.set_canny_blur_size(size); });
+
+
     
     // FPS Limit - not recording
     d->ui->enable_fps_limit->setChecked(d->configuration.limit_fps());

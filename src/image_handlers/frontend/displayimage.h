@@ -23,6 +23,8 @@
 #include "dptr.h"
 #include "image_handlers/imagehandler.h"
 #include "commons/configuration.h"
+#include "commons/solar_detector.h"
+#include <opencv2/opencv.hpp>
 
 class DisplayImage : public QObject, public ImageHandler
 {
@@ -40,12 +42,14 @@ public slots:
   void detectEdges(bool detect);
   void histogramEqualization(bool enable);
   void maximumSaturation(bool enable);
+  //void updateSolarPosition(std::vector<cv::Vec3f> circles);
+  void updateSolarPosition(solarDiscInfo circle);
   void quit();
   void read_settings();
 private:
 
   void doHandle(FrameConstPtr frame) override;
-
+  
   DPTR
 };
 

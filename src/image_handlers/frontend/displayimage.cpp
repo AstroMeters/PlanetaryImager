@@ -36,6 +36,9 @@
 #include <atomic>
 #include "commons/utils.h"
 #include "commons/frame.h"
+#include "commons/solar_detector.h"
+#include <vector>
+#include <opencv2/opencv.hpp>
 
 using namespace std;
 using namespace std::placeholders;
@@ -44,6 +47,7 @@ DPTR_IMPL(DisplayImage) {
   const Configuration &configuration;
   DisplayImage *q;
   unique_ptr<fps_counter> displayFps;
+  //unique_ptr<SolarDetector> solarDetector;
   atomic_bool recording;
   atomic_bool running;
 
@@ -79,6 +83,9 @@ DPTR_IMPL(DisplayImage) {
   bool should_display_frame() const;
   void canny(cv::Mat& source, int lowThreshold = 1, int ratio = 3, int kernel_size = 3, int blurSize = 3);
   void sobel( cv::Mat& source, int blur_size = 3, int ker_size = 3, int scale = 1, int delta = 0 );
+
+
+  solarDiscInfo solar_disc;
 
   void bayer2rgb(FrameConstPtr frame, cv::Mat &image);
   void bgr2rgb(FrameConstPtr frame, cv::Mat &image);
@@ -210,10 +217,25 @@ void DisplayImage::create_qimages()
       cv::cvtColor(hsv, *cv_image, cv::COLOR_HSV2RGB);
     }
 
-//TODO: Zapnout ROI
+//TODO: Zapnout v pripade povoleneho virtual ROI
     if(true) {
       cv::rectangle(*cv_image, cv::Point(100, 100), cv::Point(200, 200), 1, cv::LINE_AA);
     }
+    std::vector<cv::Vec3f> circ;
+    
+    if(d->configuration.solar_display_contours()) {
+        cv::Point center = cv::Point(d->solar_disc.x, d->solar_disc.y);
+        cv::circle(*cv_image, center, 1, cv::Scalar(0,100,100), 3, cv::LINE_AA);
+        int radius = (int) d->solar_disc.radius;
+        if(d->solar_disc.valid){
+          cv::circle(*cv_image, center, radius, cv::Scalar(100,255,100), 1, cv::LINE_AA);
+        }else{
+          cv::circle(*cv_image, center, radius, cv::Scalar(255,0,0), 1, cv::LINE_AA);
+        }
+
+
+      }
+    // }
 
     QImage image{cv_image->data, cv_image->cols, cv_image->rows, static_cast<int>(cv_image->step), cv_image->channels() == 1 ? QImage::Format_Grayscale8: QImage::Format_RGB888,
       [](void *data){ delete reinterpret_cast<cv::Mat*>(data); }, cv_image};
@@ -295,6 +317,19 @@ QRect DisplayImage::imageRect() const
 void DisplayImage::quit()
 {
   d->running = false;
+}
+
+
+void DisplayImage::updateSolarPosition(solarDiscInfo circle)
+//void DisplayImage::updateSolarPosition(bool a)
+{
+ 
+  d->solar_disc = circle;
+  std::cout << "INFO v DISPLAY" << circle.radius <<  std::endl;
+  // int radius = circle[2];
+  // std::cout << "HODNOTA " << circle << std::endl;
+  // std::cout << "radius" << radius << std::endl;
+  // d->circle = circle;
 }
 
 

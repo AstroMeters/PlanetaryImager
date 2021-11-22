@@ -37,6 +37,7 @@ int main(int argc, char** argv)
 {
     qRegisterMetaType<FramePtr>("FramePtr");
     qRegisterMetaType<FrameConstPtr>("FrameConstPtr");
+    //qRegisterMetaType<cv::Vec3f*>("cv::Vec3f");
     CrashHandler crash_handler({SIGSEGV, SIGABRT});
     cerr << "Starting PlanetaryImager - version " << PLANETARY_IMAGER_VERSION << " (" << HOST_PROCESSOR << ")" << endl;
     QApplication app(argc, argv);

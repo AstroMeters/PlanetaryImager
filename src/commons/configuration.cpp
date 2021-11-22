@@ -99,6 +99,12 @@ define_setting(limit_fps, bool, true)
 define_setting(debayer, bool, true)
 define_setting(limit_fps_recording, bool, true)
 
+
+define_setting(solar_detection, bool, false)
+define_setting(solar_virtualROI, bool, true)
+define_setting(solar_display_contours, bool, true)
+define_setting(solar_display_mesh, bool, true)
+
 define_setting_enum(recording_limit_type, Configuration::RecordingLimit, Configuration::FramesNumber)
 define_setting(recording_seconds_limit, double , 5)    
 define_setting(recording_frames_limit, long long, 100)

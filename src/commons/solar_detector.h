@@ -9,6 +9,15 @@
 #include "image_handlers/imagehandler.h"
 
 
+FWD_PTR(SolarDetector)
+
+struct solarDiscInfo {
+        bool valid = false;
+        int x;
+        int y;
+        float radius;
+    };
+
 class SolarDetector: public QObject, public ImageHandler
 {
     Q_OBJECT
@@ -18,17 +27,31 @@ public:
     SolarDetector();
     ~SolarDetector();
 
-    // SolarDetector(const SolarDetector &)             = delete;
-    // SolarDetector(SolarDetector &&)                  = delete;
-    // SolarDetector &operator =(const SolarDetector &) = delete;
-    // SolarDetector &operator =(SolarDetector &&)      = delete;
+    //std::mutex guard;
+
+
+    SolarDetector(const SolarDetector &)             = delete;
+    SolarDetector(SolarDetector &&)                  = delete;
+    SolarDetector &operator =(const SolarDetector &) = delete;
+    SolarDetector &operator =(SolarDetector &&)      = delete;
+
+    std::vector<cv::Vec3f> get_circles();
+    std::vector<cv::Vec3f> _circles;
+
+    
+
+    
+
 
 signals:
-    //void targetLost();
+    void detection(const solarDiscInfo);
 
 private:
     void doHandle(FrameConstPtr  frame) override;
 };
+
+
+Q_DECLARE_METATYPE(solarDiscInfo)
 
 // /// Tracks image movement
 // /** Works in block matching or centroid mode. In case of block matching, multiple tracking targets

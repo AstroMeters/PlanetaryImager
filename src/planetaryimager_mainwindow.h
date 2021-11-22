@@ -24,6 +24,9 @@
 #include "commons/messageslogger.h"
 #include "commons/fwd.h"
 
+#include <opencv2/opencv.hpp>
+#include <vector>
+
 FWD_PTR(ImageHandler)
 FWD_PTR(ImageHandlers)
 FWD_PTR(PlanetaryImager)
@@ -58,6 +61,9 @@ public slots:
 
 private slots:
     void updateInfoOverlay(); ///< Updates positions of block matching targets for display
+    void updateSolarPosition(cv::Vec3f circles);
+    void detection(cv::Vec3f count);
+    //void detection();
 
 protected:
   void closeEvent(QCloseEvent *event) override;
