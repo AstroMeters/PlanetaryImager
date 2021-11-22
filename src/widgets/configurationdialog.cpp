@@ -132,6 +132,12 @@ ConfigurationDialog::ConfigurationDialog(Configuration &configuration, QWidget* 
       d->configuration.set_solar_display_contours(checked);
     });
 
+    connect(d->ui->solar_p1, F_PTR(QSpinBox, valueChanged, int), bind(&Configuration::set_solar_hough_param1, &d->configuration, _1));
+    connect(d->ui->solar_p2, F_PTR(QSpinBox, valueChanged, int), bind(&Configuration::set_solar_hough_param2, &d->configuration, _1));
+    connect(d->ui->solar_radius_min, F_PTR(QSpinBox, valueChanged, int), bind(&Configuration::set_solar_radius_min, &d->configuration, _1));
+    connect(d->ui->solar_radius_max, F_PTR(QSpinBox, valueChanged, int), bind(&Configuration::set_solar_radius_max, &d->configuration, _1));
+
+
     //connect(d->ui->solar_detection_box, F_PTR(QSpinBox, valueChanged, int), [=](double size) { d->configuration.set_canny_blur_size(size); });
 
 

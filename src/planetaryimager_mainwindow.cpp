@@ -245,7 +245,7 @@ qRegisterMetaType<solarDiscInfo>("solarDiscInfo");
   }
 
   d->imgTracker = make_shared<ImgTracker>();
-  d->solarDetector = make_shared<SolarDetector>();
+  d->solarDetector = make_shared<SolarDetector>(d->planetaryImager->configuration());
 
   imageHandlers->push_back(d->displayImage);
   imageHandlers->push_back(d->histogram);

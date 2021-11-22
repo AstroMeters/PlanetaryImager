@@ -46,6 +46,11 @@ public:
     declare_setting(solar_virtualROI, bool)
     declare_setting(solar_display_contours, bool)
     declare_setting(solar_display_mesh, bool)
+
+    declare_setting(solar_hough_param1, int)
+    declare_setting(solar_hough_param2, int)
+    declare_setting(solar_radius_min, int)
+    declare_setting(solar_radius_max, int)
     
     declare_setting(buffered_output, bool )
     declare_setting(max_memory_usage, long long )

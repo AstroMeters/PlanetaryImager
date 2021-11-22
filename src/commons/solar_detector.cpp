@@ -17,52 +17,34 @@
  */
 
 #include <opencv2/opencv.hpp>
+#include "commons/configuration.h"
 #include <QDebug>
 #include <QtCore/qrect.h>
 #include <mutex>
 #include <numeric>
 #include <vector>
 #include <QMetaType>
-
+#include <math.h> 
 
 #include "solar_detector.h"
 
-
-
-struct BlockMatchingTarget
-{
-    /// Target position; corresponds with the middle of 'refBlock'
-    
-};
-
+using namespace cv;
+using namespace std;
 
 DPTR_IMPL(SolarDetector)
 {
-//     SolarTrackingMode mode = SolarTrackingMode::Disabled;
 
-    std::mutex guard; ///< Synchronizes accesses to 'targets' and 'centroid'
+    const Configuration &configuration;
+    SolarDetector *q;
+    std::mutex guard;
     solarDiscInfo solar_disc;
-    //std::vector<BlockMatchingTarget> targets;
-//     struct
-//     {
-//         /// Fragment of the image to calculate the centroid for
-//         /** Keeps its position (upper-left corner) constant relative to 'pos'. */
-//         QRect area;
-//         QPoint pos; ///< Desired position of the 'area's centroid relative to area's origin
-//     } centroid;
 
-//     /** Initially equals (0, 0) and corresponds to the first element in 'targets'. If the first element
-//         later gets removed, the value will change to the new first element's coordinates and will be
-//         updated with it, so that GetTrackingPosition()'s result does not suddenly change. */
-//     QPoint blockMatchingReportedOffset = QPoint{ 0, 0 };
-
-//     FrameConstPtr prevFrame;
 };
 
 #define LOCK()  std::lock_guard<std::mutex> lock(d->guard)
 
 
-SolarDetector::SolarDetector(): dptr()
+SolarDetector::SolarDetector(const Configuration &configuration): dptr(configuration, this)
 {
 
 qRegisterMetaType<solarDiscInfo>("solarDiscInfo");
@@ -112,6 +94,8 @@ SolarDetector::~SolarDetector()
 
 void SolarDetector::doHandle(FrameConstPtr frame)
 {
+    d->solar_disc.valid = false;
+
 //     //TODO: change frame fragments' endianess if needed
     cv::Mat gray, thr;
     
@@ -119,29 +103,42 @@ void SolarDetector::doHandle(FrameConstPtr frame)
     
     cv::cvtColor(frame->mat(), gray, cv::COLOR_RGB2GRAY );
     cv::medianBlur(gray, gray, 5);
-    //std::vector<cv::Vec3f> circles;
-    cv::HoughCircles(gray, _circles, cv::HOUGH_GRADIENT, 1,
-                 gray.rows/2,  // change this value to detect circles with different distances to each other
-                 100, 50, 30, 500 // change the last two parameters (min_radius & max_radius) to detect larger circles
-    );
 
 
-    d->solar_disc.valid = false;
-    if(_circles.size() > 0){ 
-        d->solar_disc.x = _circles[0][0];
-        d->solar_disc.y = _circles[0][1];
-        d->solar_disc.radius = _circles[0][2];
-        d->solar_disc.valid = true;
+    // cv::HoughCircles(gray, _circles, cv::HOUGH_GRADIENT, 1,
+    //              gray.rows/2,  // change this value to detect circles with different distances to each other
+    //              d->configuration.solar_hough_param1(), d->configuration.solar_hough_param2(), d->configuration.solar_radius_min(), d->configuration.solar_radius_max()
+    // );
+
+    threshold(gray, gray, d->configuration.solar_hough_param1(), 255, 0);
+    vector<vector<Point>> contours;
+    vector<Vec4i> hierarchy;
+    findContours(gray, contours, hierarchy, 0, cv::CHAIN_APPROX_NONE);
+    vector<vector<Point>> contours_poly(contours.size());
+    for (int i = 0; i<contours.size(); i++)
+    {
+        approxPolyDP(Mat(contours[i]), contours_poly[i], 15, true);
+        cv::Moments m=cv::moments(Mat(contours[i]));
+        float area = cv::contourArea(Mat(contours[i]));
+        float equi_radius = sqrt(4*area/M_PI)/2;
+
+        int cx = (int) m.m10/m.m00;
+        int cy = (int) m.m01/m.m00;
+
+        //std::cout << cx << " ... " << cy << "   rad  " << equi_radius << std::endl;
+        //drawContours(gray, contours_poly, i, Scalar(0, 255, 255), 2, 8); 
+
+        if(equi_radius > d->configuration.solar_radius_min()){ 
+            d->solar_disc.x = cx;
+            d->solar_disc.y = cy;
+            d->solar_disc.radius = equi_radius;
+            d->solar_disc.valid = true;
+        }
+
     }
-
+    
     emit detection(d->solar_disc);
     
 
     return;
-}
-
-std::vector<cv::Vec3f> SolarDetector::get_circles()
-{
-    LOCK();
-    return _circles;
 }
