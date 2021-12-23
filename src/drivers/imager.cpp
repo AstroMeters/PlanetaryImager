@@ -23,6 +23,8 @@
 #include <QMutex>
 #include <stdio.h>
 #include <iostream>
+#include <QRect>
+
 using namespace std;
 using namespace std::placeholders;
 
@@ -33,6 +35,8 @@ DPTR_IMPL(Imager) {
   unique_ptr<QHash<Imager::Capability, bool>> capabilities;
   bool destroyed = false;
   Configuration::CaptureEndianess captureEndianess = Configuration::CaptureEndianess::CameraDefault;
+  bool enabled_virtual_roi = false;
+  QRect virtual_roi = QRect(0, 0, 0, 0);
 };
 
 Imager::Imager(const ImageHandlerPtr& image_handler) : QObject(nullptr), dptr(image_handler)
@@ -169,12 +173,13 @@ void Imager::setCaptureEndianess(Configuration::CaptureEndianess captureEndianes
 }
 
 
-  void Imager::setROIVirtual(const QRect &){
-    qDebug() << "SET VIRTUAL ROI";
-    std::cout << "SET ROI" << std::endl;
+void Imager::setVirtualROI(const QRect rect){
+  d->enabled_virtual_roi = true;
+  d->virtual_roi = rect;
 
-  }
-  void Imager::clearROIVirtual(){
-    qDebug() << "SET VIRTUAL ROI";
-  }
+}
 
+void Imager::clearVirtualROI(){
+  d->enabled_virtual_roi = false;
+  d->virtual_roi = QRect(0, 0, 0, 0);
+}

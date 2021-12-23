@@ -61,9 +61,6 @@ public slots:
 
 private slots:
     void updateInfoOverlay(); ///< Updates positions of block matching targets for display
-    void updateSolarPosition(cv::Vec3f circles);
-    void detection(cv::Vec3f count);
-    //void detection();
 
 protected:
   void closeEvent(QCloseEvent *event) override;

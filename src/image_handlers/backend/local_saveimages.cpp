@@ -38,6 +38,7 @@
 #include "commons/messageslogger.h"
 #include "commons/elapsedtimer.h"
 #include "commons/frame.h"
+#include <opencv2/opencv.hpp>
 
 using namespace std;
 using namespace std::placeholders;
@@ -71,6 +72,8 @@ struct RecordingParameters {
   qlonglong timelapse_msecs;
   Configuration *configuration = nullptr;
   RecordingInformation::Writer::ptr recording_information_writer(const FileWriterPtr &file_writer) const;
+  bool enable_crop;
+  cv::Rect crop;
 };
 
 RecordingInformation::Writer::ptr RecordingParameters::recording_information_writer(const FileWriterPtr &file_writer) const {
@@ -311,7 +314,9 @@ void LocalSaveImages::startRecording(Imager *imager)
       0,
       d->configuration.timelapse_mode(),
       d->configuration.timelapse_msecs(),
-      &d->configuration
+      &d->configuration,
+      false, // enable crop
+      cv::Rect(0, 0, 0, 0)
     };
     QMetaObject::invokeMethod(d->worker, "start", Q_ARG(RecordingParameters, recording), Q_ARG(qlonglong, d->configuration.max_memory_usage() ));
   }

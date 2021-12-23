@@ -184,17 +184,6 @@ void PlanetaryImagerMainWindow::updateInfoOverlay()
   }
 }
 
-void PlanetaryImagerMainWindow::updateSolarPosition(cv::Vec3f circles)
-{
-    std::cout << "UPDATE" << circles << std::endl;
-}
-
-
-void PlanetaryImagerMainWindow::detection(cv::Vec3f count){
-  std::cout << "POCET " << count << std::endl;
-}
-
-
 PlanetaryImagerMainWindow::~PlanetaryImagerMainWindow()
 {
   LOG_F_SCOPE
@@ -237,7 +226,6 @@ qRegisterMetaType<solarDiscInfo>("solarDiscInfo");
   d->histogram = make_shared<Histogram>(d->planetaryImager->configuration());
   d->ui->histogram->setWidget(d->histogramWidget = new HistogramWidget(d->histogram, d->planetaryImager->configuration()));
   d->ui->statusbar->addPermanentWidget(d->statusbar_info_widget = new StatusBarInfoWidget(), 1);
-  //d->solarDetector = make_shared<SolarDetector>());
 
   if (HAVE_LIBINDI == 1)
   {
@@ -376,19 +364,8 @@ qRegisterMetaType<solarDiscInfo>("solarDiscInfo");
   connect(d->planetaryImager->saveImages().get(), &SaveImages::savedFrames, d->recording_panel, &RecordingPanel::saved, Qt::QueuedConnection);
   connect(d->planetaryImager->saveImages().get(), &SaveImages::droppedFrames, d->recording_panel, &RecordingPanel::dropped, Qt::QueuedConnection);
   connect(d->ui->actionDisconnect, &QAction::triggered, d->planetaryImager.get(), &PlanetaryImager::closeImager);
-
-  //connect(d->solarDetector.get(), &SolarDetector::newDetection, d->solarDetector.get(), bind(&DisplayImage::updateSolarPosition, d->detectet_solar_disc), Qt::QueuedConnection);
-  //connect(d->solarDetector, &SolarDetector::newDetection, d->solarDetector, bind(&DisplayImage::updateSolarPosition, 10), Qt::QueuedConnection);
-  //int cislo = 10;
-  //connect(d->solarDetector.get(), &SolarDetector::detection, this, &PlanetaryImagerMainWindow::detection, Qt::QueuedConnection);
-  //connect(d->solarDetector.get(), &SolarDetector::detection, this, &PlanetaryImagerMainWindow::updateSolarPosition);
   connect(d->solarDetector.get(), &SolarDetector::detection, d->displayImage.get(), &DisplayImage::updateSolarPosition);
-  // connect(d->solarDetector.get(), &SolarDetector::detection, this, [=]
-  //         {
-  //           std::cout << "............";
-  //         });
-
-
+  
   connect(d->ui->actionQuit, &QAction::triggered, this, &QWidget::close);
   connect(d->ui->actionQuit, &QAction::triggered, this, &PlanetaryImagerMainWindow::quit);
   d->enableUIWidgets(false);
@@ -407,8 +384,7 @@ qRegisterMetaType<solarDiscInfo>("solarDiscInfo");
             d->image_widget->startSelectionMode(ZoomableImage::SelectionMode::Rect);
           });
 
-  connect(d->ui->actionClear_ROIVirtual, &QAction::triggered, [&]
-          { d->imager->clearROIVirtual(); });
+  connect(d->ui->actionClear_ROIVirtual, &QAction::triggered, [&]  { d->imager->clearROIVirtual(); });
   connect(d->ui->actionSelect_ROIVirtual, &QAction::triggered, [&]
           {
             d->selection_mode = Private::SelectionMode::VirtualROI;

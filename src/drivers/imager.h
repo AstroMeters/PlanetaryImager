@@ -47,9 +47,7 @@ public:
   
   void setCaptureEndianess(Configuration::CaptureEndianess captureEndianess);
   virtual void clearROI() = 0;
-
-  void setROIVirtual(const QRect &);
-  void clearROIVirtual();
+  void clearVirtualROI();
 
 protected:
   void restart(const ImagerThread::Worker::factory &worker);
@@ -62,6 +60,7 @@ private:
   
 public slots:
   virtual void setROI(const QRect &) = 0;
+  void setVirtualROI(const QRect rect);
   virtual void setControl(const Imager::Control &control) = 0;
   virtual void setControls(const Imager::Controls &controls);
   void import_controls(const QVariantList &controls, bool by_id = true);
