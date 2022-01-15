@@ -24,7 +24,7 @@
 #include <numeric>
 #include <vector>
 #include <QMetaType>
-#include <math.h> 
+#include <math.h>
 
 #include "solar_detector.h"
 
@@ -98,12 +98,17 @@ void SolarDetector::doHandle(FrameConstPtr frame)
 
 //     //TODO: change frame fragments' endianess if needed
     cv::Mat gray, thr;
-    
-    std::cout << cv::mean(frame->mat()) << std::endl;
-    
-    cv::cvtColor(frame->mat(), gray, cv::COLOR_RGB2GRAY );
-    cv::medianBlur(gray, gray, 5);
 
+    std::cout << cv::mean(frame->mat()) << std::endl;
+
+    // monochromatic
+    if(frame->channels() == 1) {
+        cv::medianBlur(frame->mat(), gray, 5);
+    } else {
+        //colour
+        cv::cvtColor(frame->mat(), gray, cv::COLOR_RGB2GRAY );
+        cv::medianBlur(gray, gray, 5);
+    }
 
     // cv::HoughCircles(gray, _circles, cv::HOUGH_GRADIENT, 1,
     //              gray.rows/2,  // change this value to detect circles with different distances to each other
@@ -126,9 +131,9 @@ void SolarDetector::doHandle(FrameConstPtr frame)
         int cy = (int) m.m01/m.m00;
 
         //std::cout << cx << " ... " << cy << "   rad  " << equi_radius << std::endl;
-        //drawContours(gray, contours_poly, i, Scalar(0, 255, 255), 2, 8); 
+        //drawContours(gray, contours_poly, i, Scalar(0, 255, 255), 2, 8);
 
-        if(equi_radius > d->configuration.solar_radius_min()){ 
+        if(equi_radius > d->configuration.solar_radius_min()){
             d->solar_disc.x = cx;
             d->solar_disc.y = cy;
             d->solar_disc.radius = equi_radius;
@@ -136,9 +141,9 @@ void SolarDetector::doHandle(FrameConstPtr frame)
         }
 
     }
-    
+
     emit detection(d->solar_disc);
-    
+
 
     return;
 }
