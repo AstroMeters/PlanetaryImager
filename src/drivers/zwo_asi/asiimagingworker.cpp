@@ -54,7 +54,7 @@ ASIImagingWorker::ASIImagingWorker(const QRect& roi, int bin, const ASI_CAMERA_I
     ASI_CHECK << ASIStartVideoCapture(d->info.CameraID) << "Start video capture";
     d->buffer.resize(d->calcBufferSize());
     qDebug() << "Imaging started: imageFormat=" << d->format << ", roi: " << d->roi << ", bin: " << d->bin;
-    
+
     static std::map<ASI_BAYER_PATTERN, Frame::ColorFormat> color_formats{
     {ASI_BAYER_RG, Frame::Bayer_RGGB},
     {ASI_BAYER_BG, Frame::Bayer_BGGR},
@@ -148,11 +148,13 @@ int ASIImagingWorker::Private::getCVImageType()
 }
 
 Frame::ColorFormat ASIImagingWorker::Private::colorFormat() const {
-  if(format == ASI_IMG_RGB24)
-    return Frame::BGR; // TODO: apparently what is reported as RGB is infact BGR; check with ASI devs
-  if(format == ASI_IMG_Y8)
-    return Frame::Mono;
-  return info.IsColorCam ? color_format : Frame::Mono;
+  switch(format){
+      case ASI_IMG_RGB24:
+        return Frame::BGR;
+      case ASI_IMG_Y8:
+        return Frame::Mono;
+    }
+    return info.IsColorCam ? color_format : Frame::Mono;
 }
 
 QRect ASIImagingWorker::roi() const
@@ -169,5 +171,3 @@ int ASIImagingWorker::bin() const
 {
   return d->bin;
 }
-
-

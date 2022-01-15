@@ -365,7 +365,7 @@ qRegisterMetaType<solarDiscInfo>("solarDiscInfo");
   connect(d->planetaryImager->saveImages().get(), &SaveImages::droppedFrames, d->recording_panel, &RecordingPanel::dropped, Qt::QueuedConnection);
   connect(d->ui->actionDisconnect, &QAction::triggered, d->planetaryImager.get(), &PlanetaryImager::closeImager);
   connect(d->solarDetector.get(), &SolarDetector::detection, d->displayImage.get(), &DisplayImage::updateSolarPosition);
-  
+
   connect(d->ui->actionQuit, &QAction::triggered, this, &QWidget::close);
   connect(d->ui->actionQuit, &QAction::triggered, this, &PlanetaryImagerMainWindow::quit);
   d->enableUIWidgets(false);
@@ -384,7 +384,7 @@ qRegisterMetaType<solarDiscInfo>("solarDiscInfo");
             d->image_widget->startSelectionMode(ZoomableImage::SelectionMode::Rect);
           });
 
-  connect(d->ui->actionClear_ROIVirtual, &QAction::triggered, [&]  { d->imager->clearROIVirtual(); });
+  //connect(d->ui->actionClear_ROIVirtual, &QAction::triggered, [&]  { d->imager->clearROIVirtual(); });
   connect(d->ui->actionSelect_ROIVirtual, &QAction::triggered, [&]
           {
             d->selection_mode = Private::SelectionMode::VirtualROI;
