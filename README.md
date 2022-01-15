@@ -39,7 +39,9 @@ Requirements
  * libdc1394 (for IIDC driver)
  * FlyCapture2 SDK (for FLIR/Point Grey cameras)
 
+```bash
  sudo apt install libindi-dev libccfits-dev
+```
  
 Compile Howto
 -------------
