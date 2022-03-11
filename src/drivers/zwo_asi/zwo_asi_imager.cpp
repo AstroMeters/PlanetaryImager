@@ -55,7 +55,7 @@ DPTR_IMPL(ZWO_ASI_Imager) {
 
     ASIControl::vector controls;
     ASIControlPtr temperature_control;
-    
+
     weak_ptr<ASIImagingWorker> worker;
     ROIValidatorPtr roi_validator;
     QRect maxROI(int bin) const;
@@ -69,6 +69,7 @@ DPTR_IMPL(ZWO_ASI_Imager) {
 
 ZWO_ASI_Imager::ZWO_ASI_Imager(const ASI_CAMERA_INFO &info, const ImageHandlerPtr &imageHandler) : Imager{imageHandler}, dptr(info, this)
 {
+    cout << "Asi driver init " << endl;
     d->roi_validator = make_shared<ROIValidator>(initializer_list<ROIValidator::Rule>{
       ROIValidator::x_multiple(2),
       ROIValidator::y_multiple(2),
@@ -78,6 +79,7 @@ ZWO_ASI_Imager::ZWO_ASI_Imager(const ASI_CAMERA_INFO &info, const ImageHandlerPt
         if(info.IsUSB3Camera == ASI_FALSE && QString{info.Name}.contains("120")) {
           ROIValidator::area_multiple(1024, 0, 2, QRect{0, 0, static_cast<int>(info.MaxWidth), static_cast<int>(info.MaxHeight)})(roi);
           qDebug() << "Using ASI 120MM rect roi definition: " << roi;
+          cout << "Using ASI 120 mm rect" << endl;
         }
       }
     });
@@ -91,12 +93,13 @@ ZWO_ASI_Imager::ZWO_ASI_Imager(const ASI_CAMERA_INFO &info, const ImageHandlerPt
         };
         d->properties << Properties::Property{"Bayer pattern", patterns[info.BayerPattern]};
     }
-    
+
     d->properties << Properties::Property{"ElecPerADU", info.ElecPerADU};
     d->properties << Properties::Property{"ASI SDK Version", ASI_SDK_VERSION};
     d->properties << LiveStream << ROI << Temperature;
     ASI_CHECK << ASIOpenCamera(info.CameraID) << "Open Camera";
     ASI_CHECK << ASIInitCamera(info.CameraID) << "Init Camera";
+    cout << "CONNECT CAMERA DRIER" << endl;
     connect(this, &Imager::exposure_changed, this, bind(&Private::update_worker_exposure_timeout, d.get()));
 }
 
@@ -130,6 +133,7 @@ QString ZWO_ASI_Imager::name() const
 
 void ZWO_ASI_Imager::Private::update_worker_exposure_timeout()
 {
+  cout << "UPDATE WORKER" << endl;
   if(!worker.expired())
     worker.lock()->calc_exposure_timeout();
 }
@@ -226,6 +230,7 @@ void ZWO_ASI_Imager::startLive()
     LOG_F_SCOPE
     d->restart_worker(1, d->maxROI(1), d->info.SupportedVideoFormat[0]);
     qDebug() << "Live started correctly";
+    cout << "LIVE STARTED CORRECTLY" << endl;
 }
 
 

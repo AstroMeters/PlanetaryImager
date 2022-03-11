@@ -21,6 +21,7 @@
 #include "zwo_asi_imager.h"
 #include "zwoexception.h"
 #include <QDebug>
+#include <iostream>
 
 using namespace std;
 
@@ -57,6 +58,7 @@ ZWO_ASI_Driver::ZWO_ASI_Driver() : dptr(this)
     qRegisterMetaType<ASI_IMG_TYPE>("ASI_IMG_TYPE");
   }
   qInfo() << "(ASI) Driver initialised, version " << ASIGetSDKVersion();
+  cout << "ASI DRIVER VERSION" << ASIGetSDKVersion() << std::endl;
 }
 
 ZWO_ASI_Driver::~ZWO_ASI_Driver()
@@ -67,12 +69,14 @@ QList<CameraPtr> ZWO_ASI_Driver::cameras() const
 {
   int ncams = ASIGetNumOfConnectedCameras();
   qDebug() << "(ASI) Driver: detected" << ncams << "cameras";
+  cout << "(ASI) Driver: detected" << ncams << "cameras" << endl;
   QList<CameraPtr> cameras;
   int index=0;
   for(int index=0; index<ncams; index++) {
     ASI_CAMERA_INFO info;
     ASI_CHECK << ASIGetCameraProperty(&info, index) << string{"Get Camera Property"};
     qDebug() << "(ASI) camera index" << index << "is a" << info.Name;
+    cout << "(ASI) camera index" << index << "is a" << info.Name << endl;
     cameras.push_back(make_shared<ZWO_ASI_Camera>(info));
   }
   return cameras;
