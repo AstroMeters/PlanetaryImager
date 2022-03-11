@@ -136,6 +136,8 @@ void ImageFileWriter::Private::saveFITS(FrameConstPtr frame) const
       fits.pHDU().addKey("EXPTIME", frame->exposure().count(), "Total Exposure Time (s)");
     }
     fits.pHDU().addKey("DATE-OBS", frame->created_utc().toString(Qt::ISODate).toStdString(), "UTC start date of observation");
+    //fits.pHDU().addKey("INSTRUME", imager->name(), "Camera name");
+
     fits.pHDU().write(1, data.size(), data);
     fits.flush();
   }
