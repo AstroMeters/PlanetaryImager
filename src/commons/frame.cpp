@@ -113,7 +113,9 @@ uint8_t Frame::channels() const
 
 QDateTime Frame::created_utc() const
 {
-  return d->created_utc;
+  // TODO: original created_utc does not work. It keeps date of first immage. 
+  //return d->created_utc;
+  return QDateTime::currentDateTimeUtc();
 }
 
 Frame::ColorFormat Frame::colorFormat() const

@@ -79,6 +79,7 @@ QString ImageFileWriter::filename() const
 QString ImageFileWriter::Private::savename(FrameConstPtr frame, const QString &extension) const
 {
   return "%1/%2.%3"_q % filename % frame->created_utc().toString("yyyy-MM-ddTHHmmss.zzz-UTC") % extension;
+  return "%1/%2.%3"_q % filename % frame->created_utc().toString("yyyy-MM-ddTHH-mm-ss.zzz-UTC") % extension;
 }
 
 /* Sample FITS header by INDI - try to add as much fields as possible
@@ -108,7 +109,8 @@ END
 */
 void ImageFileWriter::Private::saveFITS(FrameConstPtr frame) const
 {
-  auto filename = savename(frame, "fits");
+
+  QString filename = savename(frame, "fits");
   cv::Mat mat;
   if (frame->channels() != 1)
   {
@@ -139,6 +141,7 @@ void ImageFileWriter::Private::saveFITS(FrameConstPtr frame) const
     //fits.pHDU().addKey("INSTRUME", imager->name(), "Camera name");
 
     fits.pHDU().write(1, data.size(), data);
+    fits.pHDU().writeChecksum();
     fits.flush();
   }
   catch (const CCfits::FitsException &e)

@@ -114,6 +114,8 @@ void SolarDetector::doHandle(FrameConstPtr frame)
     //              gray.rows/2,  // change this value to detect circles with different distances to each other
     //              d->configuration.solar_hough_param1(), d->configuration.solar_hough_param2(), d->configuration.solar_radius_min(), d->configuration.solar_radius_max()
     // );
+    
+    gray.convertTo(gray, CV_8UC1);
 
     threshold(gray, gray, d->configuration.solar_hough_param1(), 255, 0);
     vector<vector<Point>> contours;
