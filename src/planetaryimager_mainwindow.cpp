@@ -540,10 +540,17 @@ void PlanetaryImagerMainWindow::Private::onCamerasFound()
   auto message = tr("Found %1 devices").arg(planetaryImager->cameras().size());
   for (auto device : planetaryImager->cameras())
   {
-    qDebug() << message;
+    qDebug() << message << ", Device name: " << device->name();
     statusbar_info_widget->showMessage(message, 10'000);
     QAction *action = ui->menu_device_load->addAction(device->name());
     QObject::connect(action, &QAction::triggered, bind(&PlanetaryImager::open, planetaryImager.get(), device));
+  }
+  for (auto device : planetaryImager->cameras())
+  {
+    if(device->name() == planetaryImager->configuration().camera_name() ){
+      planetaryImager->open(device);
+      break;
+    }
   }
 }
 

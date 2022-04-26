@@ -301,12 +301,12 @@
              <item>
               <widget class="QLabel" name="label_31">
                <property name="text">
-                <string>Metadata list (.csv)</string>
+                <string>Metadata list (ini style)</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="metadataFile"/>
+              <widget class="QTextEdit" name="fileMetadata"/>
              </item>
             </layout>
            </widget>

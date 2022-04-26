@@ -125,6 +125,32 @@ void ImageFileWriter::Private::saveFITS(FrameConstPtr frame) const
   {
     CCfits::FITS fits{filename.toStdString(), frame->bpp() == 8 ? BYTE_IMG : USHORT_IMG, 2, naxes};
     valarray<long> data(frame->resolution().width() * frame->resolution().height());
+
+    //Prepare FITS headers
+    QStringList Lines = configuration.metadata().split('\n');
+    for (int i = 0; i < Lines.size(); i++) {
+        QStringList Parts = Lines[i].split('=');
+        std::string comment = "";
+
+        if (Parts.size() == 3){
+          comment = Parts[2].toStdString();
+        } else if (Parts.size() != 2) continue;
+
+        bool ok;
+        float numi = Parts[1].toInt(&ok);
+        if(ok){
+          fits.pHDU().addKey(Parts[0].toStdString(), numi, comment);
+          continue;
+        }
+        float num = Parts[1].toFloat(&ok);
+        if(ok){
+          fits.pHDU().addKey(Parts[0].toStdString(), num, comment);
+        } else {
+          fits.pHDU().addKey(Parts[0].toStdString(), Parts[1].toStdString(), comment);
+        }
+    }
+
+
     if (frame->bpp() == 8)
     {
       copy(mat.begin<uint8_t>(), mat.end<uint8_t>(), begin(data));
@@ -133,14 +159,14 @@ void ImageFileWriter::Private::saveFITS(FrameConstPtr frame) const
     {
       copy(mat.begin<uint16_t>(), mat.end<uint16_t>(), begin(data));
     }
+    fits.pHDU().write(1, data.size(), data);
+
     if (frame->exposure() != Frame::Seconds::zero())
     {
       fits.pHDU().addKey("EXPTIME", frame->exposure().count(), "Total Exposure Time (s)");
     }
     fits.pHDU().addKey("DATE-OBS", frame->created_utc().toString(Qt::ISODate).toStdString(), "UTC start date of observation");
-    //fits.pHDU().addKey("INSTRUME", imager->name(), "Camera name");
 
-    fits.pHDU().write(1, data.size(), data);
     fits.pHDU().writeChecksum();
     fits.flush();
   }

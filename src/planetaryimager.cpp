@@ -113,6 +113,7 @@ void PlanetaryImager::open(const CameraPtr& camera)
       imager->setCaptureEndianess(d->configuration.capture_endianess());
       imager->moveToThread(this->thread());
       imager->setParent(this);
+      d->configuration.set_camera_name(camera->name());
       return imager;
     } catch(const std::exception &e) {
       MessagesLogger::queue(MessagesLogger::Error, tr("Initialization Error"), tr("Error initializing imager %1: \n%2") % camera->name() % e.what());

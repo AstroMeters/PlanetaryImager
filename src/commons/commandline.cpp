@@ -48,7 +48,7 @@ void CommandLine::Private::loggingOptions()
 
 void CommandLine::Private::sessionName()
 {
-  parser.addOption({"session-name", "Session name", "session_name", "%1/%2.session"_q % QStandardPaths::writableLocation(QStandardPaths::CacheLocation) % app.applicationName() });
+  parser.addOption({"session-name", "Session name", "session_name", "Default"});
 }
 
 

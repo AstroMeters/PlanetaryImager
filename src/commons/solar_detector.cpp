@@ -103,7 +103,7 @@ void SolarDetector::doHandle(FrameConstPtr frame)
     } else {
          //colour
          cv::cvtColor(frame->mat(), gray, cv::COLOR_RGB2GRAY );
-         cv::medianBlur(gray, gray, 10);
+         cv::medianBlur(gray, gray, 5);
     }
 
     gray.convertTo(gray, CV_8UC1);

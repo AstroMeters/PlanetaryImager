@@ -47,12 +47,12 @@ DPTR_IMPL(Configuration) {
 };
 
 const int Configuration::DefaultServerPort = 19232;
-const char* Configuration::SessionName = "session";
 
-Configuration::Configuration() : dptr(make_shared<QSettings>("AstroMeters", qApp->applicationName()+"/"+Configuration::SessionName), this)
+Configuration::Configuration( const QString &session_name)
+: dptr(make_shared<QSettings>("AstroMeters", qApp->applicationName()+"/"+ session_name), this)
 {
   QDir appDataPath{QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)};
-  std::cout << "Konfigurace" << appDataPath.path().toStdString() << "/profiles" << Configuration::SessionName << std::endl;
+  //std::cout << "Konfigurace" << appDataPath.path().toStdString() << "/profiles" << d->settings->value("session_name") << std::endl;
   d->profilesPath.setPath(appDataPath.path() + "/profiles");
   if(! d->profilesPath.exists())
     d->profilesPath.mkpath(".");
@@ -134,6 +134,8 @@ define_setting(sobel_delta, double, 0)
 define_setting(sobel_scale, double, 1)
 define_setting(canny_kernel_size, int, 7)
 define_setting(canny_blur_size, int, 5)
+define_setting(camera_name, QString, {})
+define_setting(metadata, QString, {})
 
 void Configuration::resetCannyAdvancedSettings()
 {
@@ -277,6 +279,7 @@ QString Configuration::Private::presetPath(const QString& name) const
 
 QString Configuration::Preset::camera() const
 {
+  std::cout << "CAMERA...... " << load()["camera"].toString().toStdString() << std::endl;
   return load()["camera"].toString();
 }
 

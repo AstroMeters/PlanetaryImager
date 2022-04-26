@@ -27,7 +27,7 @@ class Configuration : public QObject
 {
   Q_OBJECT
 public:
-    Configuration();
+    Configuration( const QString &session_name = {});
     ~Configuration();
 #define declare_setting(name, type) \
     virtual void set_## name(const type &value); \
@@ -124,6 +124,8 @@ public:
 
     /// If true, camera control changes are applied immediately (no need to click "Apply")
     declare_setting(immediate_controls, bool);
+    declare_setting(camera_name, QString);
+    declare_setting(metadata, QString);
 
     struct Preset {
       QString path;
@@ -143,6 +145,8 @@ public:
     Preset::List list_presets() const;
     Preset load_preset(const QString &name) const;
     void remove_preset(const QString &name);
+
+    void add_metadata(const QString &name, const QString &value);
     
     QString savefile() const;
     

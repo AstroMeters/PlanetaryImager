@@ -47,14 +47,14 @@ int main(int argc, char** argv)
     CrashHandler crash_handler({SIGSEGV, SIGABRT});
     cerr << "Starting PlanetaryImager - version " << PLANETARY_IMAGER_VERSION << " (" << HOST_PROCESSOR << ")" << endl;
     QApplication app(argc, argv);
-    app.setApplicationName("PlanetaryImager");
-    app.setApplicationDisplayName("Planetary Imager");
-    app.setApplicationVersion(PLANETARY_IMAGER_VERSION);
     CommandLine commandLine(app);
     commandLine.backend().daemon("127.0.0.1").process();
+    app.setApplicationName("PlanetaryImager (" + commandLine.session() + ")");
+    app.setApplicationDisplayName("Planetary Imager (" + commandLine.session() + ")" );
+    app.setApplicationVersion(PLANETARY_IMAGER_VERSION);
     LogHandler log_handler{commandLine};
 
-    Configuration configuration;
+    Configuration configuration{commandLine.session()};
     auto save_images = make_shared<LocalSaveImages>(configuration);
     auto drivers = make_shared<SupportedDrivers>(commandLine.driversDirectories());
 
