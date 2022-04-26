@@ -34,6 +34,7 @@ DPTR_IMPL(CommandLine) {
   QCoreApplication &app;
   QCommandLineParser parser;
   void loggingOptions();
+  void sessionName();
 };
 #include <iostream>
 void CommandLine::Private::loggingOptions()
@@ -43,6 +44,11 @@ void CommandLine::Private::loggingOptions()
   transform(begin(levels_string), end(levels_string), back_inserter(levels), bind(&QString::fromStdString, _1));
   parser.addOption({"console-log-level", "Console logging level (one of %1)"_q % levels.join(", "), "level", QString::fromStdString(LogHandler::log_levels()[QtWarningMsg]) });
   parser.addOption({"log-file", "Log file path", "log_file", "%1/%2.log"_q % QStandardPaths::writableLocation(QStandardPaths::CacheLocation) % app.applicationName() });
+}
+
+void CommandLine::Private::sessionName()
+{
+  parser.addOption({"session-name", "Session name", "session_name", "%1/%2.session"_q % QStandardPaths::writableLocation(QStandardPaths::CacheLocation) % app.applicationName() });
 }
 
 
@@ -65,6 +71,7 @@ CommandLine & CommandLine::backend()
   }
   d->parser.addOption({"drivers", "Drivers directory", "drivers_directory_path", driversDirectory});
   d->loggingOptions();
+  d->sessionName();
   return *this;
 }
 
@@ -83,6 +90,7 @@ CommandLine & CommandLine::daemon(const QString &listenAddress)
 CommandLine & CommandLine::scripting()
 {
   d->loggingOptions();
+  d->sessionName();
   d->parser.addOptions({
     { {"p", "port"}, "server port (default: %1)"_q % Configuration::DefaultServerPort, "port", "%1"_q % Configuration::DefaultServerPort},
   });
@@ -96,6 +104,7 @@ CommandLine & CommandLine::scripting()
 CommandLine & CommandLine::frontend()
 {
   d->loggingOptions();
+  d->sessionName();
   return *this;
 }
 
@@ -141,5 +150,10 @@ QString CommandLine::logfile() const
 QString CommandLine::address() const
 {
   return d->parser.value("address");
+}
+
+QString CommandLine::session() const
+{
+  return d->parser.value("session-name");
 }
 

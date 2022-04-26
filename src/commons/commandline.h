@@ -40,6 +40,7 @@ public:
   QString logfile() const;
   QtMsgType consoleLogLevel() const;
   QString address() const;
+  QString session() const;
 private:
   DPTR
 };

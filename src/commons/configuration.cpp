@@ -29,6 +29,7 @@
 #include <QFileInfo>
 #include <QJsonDocument>
 #include <QTimer>
+#include <iostream>
 
 using namespace std;
 using namespace std::placeholders;
@@ -46,10 +47,12 @@ DPTR_IMPL(Configuration) {
 };
 
 const int Configuration::DefaultServerPort = 19232;
+const char* Configuration::SessionName = "session";
 
-Configuration::Configuration() : dptr(make_shared<QSettings>("GuLinux", qApp->applicationName()), this)
+Configuration::Configuration() : dptr(make_shared<QSettings>("AstroMeters", qApp->applicationName()+"/"+Configuration::SessionName), this)
 {
   QDir appDataPath{QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)};
+  std::cout << "Konfigurace" << appDataPath.path().toStdString() << "/profiles" << Configuration::SessionName << std::endl;
   d->profilesPath.setPath(appDataPath.path() + "/profiles");
   if(! d->profilesPath.exists())
     d->profilesPath.mkpath(".");

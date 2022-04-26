@@ -100,6 +100,8 @@ public:
     static const int DefaultServerPort;
     declare_setting(server_host, QString)
     declare_setting(server_port, int)
+
+    static const char* SessionName;
     
     enum NetworkImageFormat { Network_RAW=0, Network_JPEG=1, Network_NoImage=2 };
     declare_setting(server_image_format, NetworkImageFormat)

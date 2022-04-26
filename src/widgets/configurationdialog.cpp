@@ -27,6 +27,7 @@
 #include <QButtonGroup>
 #include "Qt/qt_strings_helper.h"
 #include "Qt/qt_functional.h"
+#include "commons/filesystembrowser.h"
 
 using namespace std::placeholders;
 using namespace std;
@@ -213,4 +214,18 @@ ConfigurationDialog::ConfigurationDialog(Configuration &configuration, QWidget* 
 
     connect(d->ui->pixelDataEndianess, F_PTR(QComboBox, activated, int),
             [=](int index) { d->configuration.set_capture_endianess(static_cast<Configuration::CaptureEndianess>(d->ui->pixelDataEndianess->itemData(index).toInt())); });
+
+    // Metadatafile input and location
+    auto metadataFile = d->ui->metadataFile->addAction(QIcon(":/resources/folder.png"), QLineEdit::TrailingPosition);
+    //connect(metadataFile, &QAction::triggered, d->filesystemBrowser.get(), [=, &configuration]{ d->filesystemBrowser->metadataFile(configuration.save_directory()); });
+    //connect(d->filesystemBrowser.get(), &FilesystemBrowser::directoryPicked, d->ui->metadataFile, &QLineEdit::setText);
+
+    // auto check_directory = [&] {
+    //   auto saveDir = QDir(d->ui->metadataFile->text());
+    
+    // };
+    // check_directory();
+    //connect(metadataFile, &QLineEdit::textChanged, check_directory);
+
+
 }
