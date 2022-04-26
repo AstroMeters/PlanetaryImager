@@ -95,36 +95,31 @@ SolarDetector::~SolarDetector()
 void SolarDetector::doHandle(FrameConstPtr frame)
 {
     d->solar_disc.valid = false;
-
-//     //TODO: change frame fragments' endianess if needed
     cv::Mat gray, thr;
-
-    std::cout << cv::mean(frame->mat()) << std::endl;
 
     // monochromatic
     if(frame->channels() == 1) {
-        cv::medianBlur(frame->mat(), gray, 5);
+         cv::medianBlur(frame->mat(), gray, 5);
     } else {
-        //colour
-        cv::cvtColor(frame->mat(), gray, cv::COLOR_RGB2GRAY );
-        cv::medianBlur(gray, gray, 5);
+         //colour
+         cv::cvtColor(frame->mat(), gray, cv::COLOR_RGB2GRAY );
+         cv::medianBlur(gray, gray, 10);
     }
 
-    // cv::HoughCircles(gray, _circles, cv::HOUGH_GRADIENT, 1,
-    //              gray.rows/2,  // change this value to detect circles with different distances to each other
-    //              d->configuration.solar_hough_param1(), d->configuration.solar_hough_param2(), d->configuration.solar_radius_min(), d->configuration.solar_radius_max()
-    // );
-    
     gray.convertTo(gray, CV_8UC1);
 
-    threshold(gray, gray, d->configuration.solar_hough_param1(), 255, 0);
+    // threshold(gray, thr, d->configuration.solar_hough_param1(), 255, cv::THRESH_BINARY);
+    threshold(gray, thr, 50, 255, cv::THRESH_BINARY);
     vector<vector<Point>> contours;
     vector<Vec4i> hierarchy;
-    findContours(gray, contours, hierarchy, 0, cv::CHAIN_APPROX_NONE);
+    //std::cout << thr << std::endl;
+    findContours(thr, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_NONE);
     vector<vector<Point>> contours_poly(contours.size());
-    for (int i = 0; i<contours.size(); i++)
+    std::cout << "Pocet detekci" << contours.size() << "  param1  " << d->configuration.solar_hough_param1() << std::endl;
+   for (int i = 0; i<contours.size(); i++)
     {
-        approxPolyDP(Mat(contours[i]), contours_poly[i], 15, true);
+        float epsilon = 10*cv::arcLength(Mat(contours[i]), true);
+        approxPolyDP(Mat(contours[i]), contours_poly[i], epsilon, true);
         cv::Moments m=cv::moments(Mat(contours[i]));
         float area = cv::contourArea(Mat(contours[i]));
         float equi_radius = sqrt(4*area/M_PI)/2;
@@ -133,19 +128,20 @@ void SolarDetector::doHandle(FrameConstPtr frame)
         int cy = (int) m.m01/m.m00;
 
         //std::cout << cx << " ... " << cy << "   rad  " << equi_radius << std::endl;
-        //drawContours(gray, contours_poly, i, Scalar(0, 255, 255), 2, 8);
+        //drawContours(gray, contours_poly, i, Scalar(0, 255, 255), 2, 8); 
 
-        if(equi_radius > d->configuration.solar_radius_min()){
+        if(equi_radius > d->configuration.solar_radius_min() && equi_radius < d->configuration.solar_radius_max() ){
+            std::cout << "DETEKCE JE VALIDIN" << std::endl;
             d->solar_disc.x = cx;
             d->solar_disc.y = cy;
             d->solar_disc.radius = equi_radius;
             d->solar_disc.valid = true;
+            emit detection(d->solar_disc);
         }
 
     }
 
     emit detection(d->solar_disc);
-
 
     return;
 }

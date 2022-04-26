@@ -325,10 +325,10 @@ void DisplayImage::updateSolarPosition(solarDiscInfo circle)
 {
  
   d->solar_disc = circle;
-  std::cout << "INFO v DISPLAY" << circle.radius <<  std::endl;
+  std::cout << "INFO v DISPLAY " << circle.radius <<  std::endl;
   // int radius = circle[2];
   // std::cout << "HODNOTA " << circle << std::endl;
-  // std::cout << "radius" << radius << std::endl;
+  // std::cout << "radius" << circle.radius << std::endl;
   // d->circle = circle;
 }
 
