@@ -40,7 +40,8 @@ Requirements
  * FlyCapture2 SDK (for FLIR/Point Grey cameras)
 
 ```bash
- sudo apt install libindi-dev libccfits-dev
+ sudo apt install libindi-dev libccfits-dev cmake gcc g++ qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools qt5-qmltooling-plugins qtdeclarative5-dev build-essential libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev libopencv-dev 
+
 ```
  
 Compile Howto
