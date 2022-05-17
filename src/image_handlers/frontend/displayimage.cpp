@@ -219,7 +219,10 @@ void DisplayImage::create_qimages()
 
 //TODO: Zapnout v pripade povoleneho virtual ROI
     if(true) {
-      cv::rectangle(*cv_image, cv::Point(100, 100), cv::Point(200, 200), 1, cv::LINE_AA);
+      //cv::rectangle(*cv_image, cv::Point(100, 100), cv::Point(200, 200), 1, cv::LINE_AA);
+      cv::Point center = cv::Point(cv_image->cols/2, cv_image->rows/2);
+      cv::circle(*cv_image, center, d->configuration.solar_radius_min(), cv::Scalar(0, 128, 255), 1, cv::LINE_AA);
+      cv::circle(*cv_image, center, d->configuration.solar_radius_max(), cv::Scalar(0, 128, 255), 1, cv::LINE_AA);
     }
     std::vector<cv::Vec3f> circ;
     
@@ -232,10 +235,7 @@ void DisplayImage::create_qimages()
         }else{
           cv::circle(*cv_image, center, radius, cv::Scalar(255,0,0), 1, cv::LINE_AA);
         }
-
-
       }
-    // }
 
     QImage image{cv_image->data, cv_image->cols, cv_image->rows, static_cast<int>(cv_image->step), cv_image->channels() == 1 ? QImage::Format_Grayscale8: QImage::Format_RGB888,
       [](void *data){ delete reinterpret_cast<cv::Mat*>(data); }, cv_image};

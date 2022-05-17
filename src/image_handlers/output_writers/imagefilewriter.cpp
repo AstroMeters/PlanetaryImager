@@ -136,19 +136,20 @@ void ImageFileWriter::Private::saveFITS(FrameConstPtr frame) const
           comment = Parts[2].toStdString();
         } else if (Parts.size() != 2) continue;
 
+        bool oki;
         bool ok;
-        float numi = Parts[1].toInt(&ok);
-        if(ok){
-          fits.pHDU().addKey(Parts[0].toStdString(), numi, comment);
-          continue;
-        }
+        int numi = Parts[1].toInt(&oki);
         float num = Parts[1].toFloat(&ok);
-        if(ok){
+        if(oki){
+          fits.pHDU().addKey(Parts[0].toStdString(), numi, comment);
+        }else if(ok){
           fits.pHDU().addKey(Parts[0].toStdString(), num, comment);
         } else {
           fits.pHDU().addKey(Parts[0].toStdString(), Parts[1].toStdString(), comment);
         }
     }
+
+    fits.pHDU().addKey("FILENAME", filename.toStdString(), "");
 
 
     if (frame->bpp() == 8)

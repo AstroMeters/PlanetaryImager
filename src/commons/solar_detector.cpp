@@ -115,7 +115,7 @@ void SolarDetector::doHandle(FrameConstPtr frame)
     //std::cout << thr << std::endl;
     findContours(thr, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_NONE);
     vector<vector<Point>> contours_poly(contours.size());
-    std::cout << "Pocet detekci" << contours.size() << "  param1  " << d->configuration.solar_hough_param1() << std::endl;
+    //std::cout << "Pocet detekci" << contours.size() << "  param1  " << d->configuration.solar_hough_param1() << std::endl;
    for (int i = 0; i<contours.size(); i++)
     {
         float epsilon = 10*cv::arcLength(Mat(contours[i]), true);
@@ -131,7 +131,7 @@ void SolarDetector::doHandle(FrameConstPtr frame)
         //drawContours(gray, contours_poly, i, Scalar(0, 255, 255), 2, 8); 
 
         if(equi_radius > d->configuration.solar_radius_min() && equi_radius < d->configuration.solar_radius_max() ){
-            std::cout << "DETEKCE JE VALIDIN" << std::endl;
+            //std::cout << "DETEKCE JE VALIDIN" << std::endl;
             d->solar_disc.x = cx;
             d->solar_disc.y = cy;
             d->solar_disc.radius = equi_radius;
